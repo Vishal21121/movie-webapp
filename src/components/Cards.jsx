@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function Cards({ id, title, poster_path }) {
+function Cards({ id, title, poster_path, showType }) {
   const navigate = useNavigate();
   return (
     <>
@@ -21,7 +21,9 @@ function Cards({ id, title, poster_path }) {
             </h5>
             <button
               className="btn btn-accent"
-              onClick={() => navigate(`/${id}`)}
+              onClick={() =>
+                navigate(`/${id}`, { state: { showType: showType } })
+              }
             >
               Watch Now
             </button>
