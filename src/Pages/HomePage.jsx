@@ -11,6 +11,7 @@ function HomePage() {
   const [noDataFound, setNoDataFound] = useState(false);
 
   const getMovie = async (movieName) => {
+    setNoDataFound(false);
     try {
       setIsLoading(true);
       setMovieCard(null);
@@ -29,8 +30,14 @@ function HomePage() {
         setShowType("movie");
       } else {
         const data = await getTvShow(movieName);
-        if (data.length == 0) {
+        if (data.total_results > 0) {
+          setShowType("tv");
+          setMovieCard(data.results);
+        } else {
           setNoDataFound(true);
+          setTimeout(() => {
+            setNoDataFound(false);
+          }, 3000);
         }
       }
     } catch (error) {
@@ -54,12 +61,7 @@ function HomePage() {
         }
       );
       const data = await response.json();
-      console.log("data", data);
-      if (data.total_results > 0) {
-        setShowType("tv");
-        setMovieCard(data.results);
-        return data.results;
-      }
+      return data;
     } catch (error) {
       console.log(error);
     } finally {
@@ -79,7 +81,7 @@ function HomePage() {
             <input
               type="text"
               placeholder="What you would like to watch?"
-              className="hidden sm:block w-3/4 bg-transparent text-white placeholder:text"
+              className="hidden sm:block w-3/4 bg-transparent text-black placeholder:text dark:text-white"
               value={movieName}
               onChange={(e) => setMovieName(e.target.value)}
             />
@@ -87,7 +89,7 @@ function HomePage() {
             <input
               type="text"
               placeholder="Search"
-              className="block sm:hidden w-3/4 bg-transparent text-white placeholder:text"
+              className="block sm:hidden w-3/4 bg-transparent text-black placeholder:text dark:text-neutral-content"
               value={movieName}
               onChange={(e) => setMovieName(e.target.value)}
             />
@@ -104,7 +106,6 @@ function HomePage() {
         className="w-full flex justify-center flex-wrap p-4 gap-8"
         id="movieContainer"
       >
-        {noDataFound && <div></div>}
         {isLoading && (
           <RotatingLines
             visible={true}
@@ -117,6 +118,13 @@ function HomePage() {
             wrapperStyle={{}}
             wrapperClass=""
           />
+        )}
+        {noDataFound && (
+          <div className="toast toast-top toast-end">
+            <div className="alert alert-warning">
+              <span>Nothing found</span>
+            </div>
+          </div>
         )}
         {movieCard &&
           movieCard.map((el) => (
