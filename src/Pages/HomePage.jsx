@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import Cards from "../components/Cards";
 import { RotatingLines } from "react-loader-spinner";
+import { useDebouncedCallback } from "use-debounce";
 
 function HomePage() {
   const [movieCard, setMovieCard] = useState(null);
@@ -11,6 +12,10 @@ function HomePage() {
   const [noDataFound, setNoDataFound] = useState(false);
 
   const getMovie = async (movieName) => {
+    if (!movieName) {
+      fetchTrendigMovies();
+      return;
+    }
     setNoDataFound(false);
     try {
       setIsLoading(true);
@@ -69,10 +74,39 @@ function HomePage() {
     }
   };
 
+  const debounceGetMovie = useDebouncedCallback(getMovie, 1000);
+
+  const fetchTrendigMovies = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `https://api.themoviedb.org/3/trending/movie/day?language=en-US`,
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data) {
+        setMovieCard(data.results);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrendigMovies();
+  }, []);
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#131330] to-[#0a0a12]">
       <div className="flex flex-col items-center gap-10 p-12">
-        <h1 className="text-4xl text-white font-bold">
+        <h1 className="text-4xl text-white font-bold text-center">
           What would you like to watch?
         </h1>
         <div className="flex w-full justify-center gap-4">
@@ -81,29 +115,31 @@ function HomePage() {
             <input
               type="text"
               placeholder="What you would like to watch?"
-              className="hidden sm:block w-3/4 bg-transparent text-black placeholder:text dark:text-white"
+              className="hidden sm:block w-full bg-transparent text-black placeholder:text dark:text-white"
               value={movieName}
-              onChange={(e) => setMovieName(e.target.value)}
+              autoFocus
+              onChange={(e) => {
+                setMovieName(e.target.value);
+                debounceGetMovie(e.target.value);
+              }}
             />
             {/* Input for smaller screens */}
             <input
               type="text"
               placeholder="Search"
-              className="block sm:hidden w-3/4 bg-transparent text-black placeholder:text dark:text-neutral-content"
+              className="block sm:hidden w-full bg-transparent text-black placeholder:text dark:text-neutral-content"
               value={movieName}
-              onChange={(e) => setMovieName(e.target.value)}
+              autoFocus
+              onChange={(e) => {
+                setMovieName(e.target.value);
+                debounceGetMovie(e.target.value);
+              }}
             />
           </div>
-          <button
-            className="btn btn-outline btn-info"
-            onClick={() => getMovie(movieName)}
-          >
-            Search
-          </button>
         </div>
       </div>
       <div
-        className="w-full flex justify-center flex-wrap p-4 gap-8"
+        className="w-full flex justify-center flex-wrap p-4 gap-4"
         id="movieContainer"
       >
         {isLoading && (
