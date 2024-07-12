@@ -10,8 +10,10 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showType, setShowType] = useState("");
   const [noDataFound, setNoDataFound] = useState(false);
+  const [currentResultType, setCurrentResultType] = useState("Trending Movies");
 
   const getMovie = async (movieName) => {
+    setCurrentResultType("Search Result");
     if (!movieName) {
       fetchTrendigMovies();
       return;
@@ -77,6 +79,7 @@ function HomePage() {
   const debounceGetMovie = useDebouncedCallback(getMovie, 1000);
 
   const fetchTrendigMovies = async () => {
+    setCurrentResultType("Trending Movies");
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -137,6 +140,9 @@ function HomePage() {
             />
           </div>
         </div>
+        <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold ">
+          {currentResultType}
+        </h2>
       </div>
       <div
         className="w-full flex justify-center flex-wrap p-4 gap-4"
