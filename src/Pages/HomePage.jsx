@@ -151,22 +151,26 @@ function HomePage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center w-full h-full">
-        <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold">
-          Previosly Watched
-        </h2>
-        <div className="w-full flex flex-wrap justify-center gap-4 p-4">
-          {movieList &&
-            movieList.map((el) => (
-              <MovieWatched
-                key={el.movieId}
-                src={el.src}
-                showType={el.showType}
-                movieId={el.movieId}
-              />
-            ))}
+      {currentResultType === "Trending Movies" && (
+        <div className="flex flex-col items-center w-full h-full">
+          {movieList && movieList.length > 0 && (
+            <h2 className="sm:text-4xl text-3xl text-gray-300 font-bold">
+              Previosly Watched
+            </h2>
+          )}
+          <div className="w-full flex flex-wrap justify-center gap-4 p-4">
+            {movieList &&
+              movieList.map((el) => (
+                <MovieWatched
+                  key={el.movieId}
+                  src={el.src}
+                  showType={el.showType}
+                  movieId={el.movieId}
+                />
+              ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex flex-col items-center gap-4">
         <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold">
           {currentResultType}

@@ -7,7 +7,7 @@ function MovieWatched({ src, movieId, showType }) {
 
   return (
     <img
-      className="h-[25rem] bg-contain cursor-pointer"
+      className="h-[25rem] bg-contain cursor-pointer rounded-lg"
       src={src}
       alt="..."
       onClick={() =>
