@@ -3,6 +3,8 @@ import { FaSearch } from "react-icons/fa";
 import Cards from "../components/Cards";
 import { RotatingLines } from "react-loader-spinner";
 import { useDebouncedCallback } from "use-debounce";
+import MovieWatched from "../components/MovieWatched";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 function HomePage() {
   const [movieCard, setMovieCard] = useState(null);
@@ -11,6 +13,8 @@ function HomePage() {
   const [showType, setShowType] = useState("");
   const [noDataFound, setNoDataFound] = useState(false);
   const [currentResultType, setCurrentResultType] = useState("Trending Movies");
+  const [movieList, setMovieList] = useState(null);
+  const { getItem } = useLocalStorage();
 
   const getMovie = async (movieName) => {
     setCurrentResultType("Search Result");
@@ -104,6 +108,12 @@ function HomePage() {
 
   useEffect(() => {
     fetchTrendigMovies();
+    let itemGot = getItem("movieList");
+    if (itemGot) {
+      const items = JSON.parse(itemGot);
+      console.log(items);
+      setMovieList(items);
+    }
   }, []);
 
   return (
@@ -140,44 +150,62 @@ function HomePage() {
             />
           </div>
         </div>
-        <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold ">
+      </div>
+      <div className="flex flex-col items-center w-full h-full">
+        <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold">
+          Previosly Watched
+        </h2>
+        <div className="w-full flex flex-wrap justify-center gap-4 p-4">
+          {movieList &&
+            movieList.map((el) => (
+              <MovieWatched
+                key={el.movieId}
+                src={el.src}
+                showType={el.showType}
+                movieId={el.movieId}
+              />
+            ))}
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-4">
+        <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold">
           {currentResultType}
         </h2>
-      </div>
-      <div
-        className="w-full flex justify-center flex-wrap p-4 gap-4"
-        id="movieContainer"
-      >
-        {isLoading && (
-          <RotatingLines
-            visible={true}
-            height="96"
-            width="96"
-            color="grey"
-            strokeWidth="5"
-            animationDuration="0.75"
-            ariaLabel="rotating-lines-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-          />
-        )}
-        {noDataFound && (
-          <div className="toast toast-top toast-end">
-            <div className="alert alert-warning">
-              <span>Nothing found</span>
-            </div>
-          </div>
-        )}
-        {movieCard &&
-          movieCard.map((el) => (
-            <Cards
-              key={el.id}
-              id={el.id}
-              title={el.title}
-              poster_path={el.poster_path}
-              showType={showType}
+        <div
+          className="w-full flex justify-center flex-wrap p-4 gap-4"
+          id="movieContainer"
+        >
+          {isLoading && (
+            <RotatingLines
+              visible={true}
+              height="96"
+              width="96"
+              color="grey"
+              strokeWidth="5"
+              animationDuration="0.75"
+              ariaLabel="rotating-lines-loading"
+              wrapperStyle={{}}
+              wrapperclassName=""
             />
-          ))}
+          )}
+          {noDataFound && (
+            <div className="toast toast-top toast-end">
+              <div className="alert alert-warning">
+                <span>Nothing found</span>
+              </div>
+            </div>
+          )}
+          {movieCard &&
+            movieCard.map((el) => (
+              <Cards
+                key={el.id}
+                id={el.id}
+                title={el.title}
+                poster_path={el.poster_path}
+                showType={showType}
+              />
+            ))}
+        </div>
       </div>
     </div>
   );

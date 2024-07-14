@@ -22,7 +22,12 @@ function Cards({ id, title, poster_path, showType }) {
             <button
               className="btn btn-accent"
               onClick={() =>
-                navigate(`/${id}`, { state: { showType: showType } })
+                navigate(`/${id}`, {
+                  state: {
+                    showType: showType,
+                    src: `https://image.tmdb.org/t/p/w500${poster_path}`,
+                  },
+                })
               }
             >
               Watch Now

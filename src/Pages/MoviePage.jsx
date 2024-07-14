@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
+import { useLocalStorage } from "../hooks/useLocalStorage.js";
 
 function MoviePage() {
   const { movieId } = useParams();
@@ -8,11 +9,20 @@ function MoviePage() {
   const location = useLocation();
   const state = location.state;
   console.log("state", state);
+  const { pushElement } = useLocalStorage();
 
   useEffect(() => {
     if (!state) {
       navigate("/");
     }
+    pushElement(
+      {
+        src: location.state.src,
+        showType: state?.showType || "movie",
+        movieId: movieId,
+      },
+      "movieList"
+    );
   }, []);
 
   return (
