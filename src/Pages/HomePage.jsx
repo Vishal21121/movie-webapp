@@ -27,7 +27,7 @@ function HomePage() {
       setIsLoading(true);
       setMovieCard(null);
       const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?query=${movieName}&include_adult=false&language=en-US&page=1`,
+        `https://api.themoviedb.org/3/search/multi?query=${movieName}&include_adult=false&language=en-US&page=1`,
         {
           headers: {
             accept: "application/json",
@@ -38,41 +38,12 @@ function HomePage() {
       const data = await response.json();
       if (data.total_results > 0) {
         setMovieCard(data.results);
-        setShowType("movie");
       } else {
-        const data = await getTvShow(movieName);
-        if (data.total_results > 0) {
-          setShowType("tv");
-          setMovieCard(data.results);
-        } else {
-          setNoDataFound(true);
-          setTimeout(() => {
-            setNoDataFound(false);
-          }, 3000);
-        }
+        setNoDataFound(true);
+        setTimeout(() => {
+          setNoDataFound(false);
+        }, 3000);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getTvShow = async (tvShow) => {
-    try {
-      setIsLoading(true);
-      setMovieCard(null);
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/tv?query=${tvShow}&include_adult=false&language=en-US&page=1`,
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-          },
-        }
-      );
-      const data = await response.json();
-      return data;
     } catch (error) {
       console.log(error);
     } finally {
@@ -111,7 +82,6 @@ function HomePage() {
     let itemGot = getItem("movieList");
     if (itemGot) {
       const items = JSON.parse(itemGot);
-      console.log(items);
       setMovieList(items);
     }
   }, []);
@@ -206,7 +176,8 @@ function HomePage() {
                 id={el.id}
                 title={el.title}
                 poster_path={el.poster_path}
-                showType={showType}
+                showType={el.media_type}
+                name={el?.name}
               />
             ))}
         </div>

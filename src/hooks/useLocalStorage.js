@@ -1,7 +1,6 @@
 const useLocalStorage = () => {
   const getItem = (itemName) => {
     let itemFound = localStorage.getItem(itemName);
-    console.log(itemFound);
     if (itemFound) {
       return itemFound;
     }

@@ -8,7 +8,6 @@ function MoviePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state;
-  console.log("state", state);
   const { pushElement } = useLocalStorage();
 
   useEffect(() => {
