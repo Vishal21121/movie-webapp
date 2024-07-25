@@ -29,7 +29,7 @@ function Cards({ id, title, poster_path, showType, name }) {
             <h5 className="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">
               {title ? title : name}
             </h5>
-            <p>{showType == "tv" ? "Show" : "Movie"}</p>
+            <p>{showType}</p>
           </div>
         </div>
       ) : (

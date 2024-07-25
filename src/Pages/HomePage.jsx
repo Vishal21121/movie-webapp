@@ -5,18 +5,40 @@ import { RotatingLines } from "react-loader-spinner";
 import { useDebouncedCallback } from "use-debounce";
 import MovieWatched from "../components/MovieWatched";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import axios from "axios";
 
 function HomePage() {
   const [movieCard, setMovieCard] = useState(null);
   const [movieName, setMovieName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showType, setShowType] = useState("");
   const [noDataFound, setNoDataFound] = useState(false);
   const [currentResultType, setCurrentResultType] = useState("Trending Movies");
   const [movieList, setMovieList] = useState(null);
   const { getItem } = useLocalStorage();
 
-  const getMovie = async (movieName) => {
+  function getMovie() {
+    return axios({
+      method: "get",
+      url: `https://api.themoviedb.org/3/search/movie?query=${movieName}&include_adult=false&language=en-US&page=1`,
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+      },
+    });
+  }
+
+  function getShow() {
+    return axios({
+      method: "get",
+      url: `https://api.themoviedb.org/3/search/tv?query=${movieName}&include_adult=false&language=en-US&page=1`,
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+      },
+    });
+  }
+
+  const getSearchResults = async (movieName) => {
     setCurrentResultType("Search Result");
     if (!movieName) {
       fetchTrendigMovies();
@@ -26,18 +48,24 @@ function HomePage() {
     try {
       setIsLoading(true);
       setMovieCard(null);
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/multi?query=${movieName}&include_adult=false&language=en-US&page=1`,
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.total_results > 0) {
-        setMovieCard(data.results);
+      const [movieResponse, showResponse] = await Promise.all([
+        getMovie(movieName),
+        getShow(movieName),
+      ]);
+      const movieData = movieResponse.data.results;
+      const showData = showResponse.data.results;
+      if (movieData.length > 0 || showData.length > 0) {
+        let finalMovieData = movieData.map((el) => ({
+          ...el,
+          media_type: "Movie",
+        }));
+        let finalShowData = showData.map((el) => ({
+          ...el,
+          media_type: "Show",
+        }));
+        let results = [...finalMovieData, ...finalShowData];
+        console.log("results", finalMovieData, finalShowData);
+        setMovieCard(results);
       } else {
         setNoDataFound(true);
         setTimeout(() => {
@@ -51,7 +79,7 @@ function HomePage() {
     }
   };
 
-  const debounceGetMovie = useDebouncedCallback(getMovie, 1000);
+  const debounceGetMovie = useDebouncedCallback(getSearchResults, 1000);
 
   const fetchTrendigMovies = async () => {
     setCurrentResultType("Trending Movies");
