@@ -17,7 +17,7 @@ function MoviePage() {
     pushElement(
       {
         src: location.state.src,
-        showType: state?.showType || "movie",
+        showType: state?.showType === "tv" ? "tv" : "movie",
         movieId: movieId,
       },
       "movieList"
@@ -25,9 +25,9 @@ function MoviePage() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 p-4 h-full">
+    <div className="flex flex-col h-full gap-4 p-4">
       <div
-        className="flex gap-1 items-center w-fit ring hover:ring-blue-700 p-4 rounded-xl cursor-pointer"
+        className="flex items-center gap-1 p-4 cursor-pointer w-fit ring hover:ring-blue-700 rounded-xl"
         onClick={() => navigate("/")}
       >
         <CiLogout className="text-3xl" />
@@ -37,7 +37,7 @@ function MoviePage() {
         <div className="mockup-browser-toolbar">
           <div className="input">{`https://vidsrc.xyz/embed/${state?.showType}/${movieId}`}</div>
         </div>
-        <div className="bg-base-200 flex justify-center px-4 py-16 h-full">
+        <div className="flex justify-center h-full px-4 py-16 bg-base-200">
           <iframe
             className="w-full h-full"
             src={`https://vidsrc.xyz/embed/${state?.showType}/${movieId}`}
