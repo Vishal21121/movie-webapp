@@ -33,18 +33,13 @@ function MoviePage() {
         <CiLogout className="text-3xl" />
         <button className="w-fit">Previous Page</button>
       </div>
-      <div className="mockup-browser bg-base-300 border sm:w-1/2 w-3/4 mx-auto sm:h-[80vh] h-[50vh]">
-        <div className="mockup-browser-toolbar">
-          <div className="input">{`https://vidsrc.xyz/embed/${state?.showType}/${movieId}`}</div>
-        </div>
-        <div className="flex justify-center h-full px-4 py-16 bg-base-200">
-          <iframe
-            className="w-full h-full"
-            src={`https://vidsrc.xyz/embed/${state?.showType}/${movieId}`}
-            allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
+      <div className="w-full sm:w-3/4  mx-auto sm:h-[80vh] h-[40vh] flex justify-center  px-4 py-16 rounded-lg border">
+        <iframe
+          className="w-full h-full"
+          src={`https://vidsrc.xyz/embed/${state?.showType}/${movieId}`}
+          allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
       </div>
     </div>
   );
