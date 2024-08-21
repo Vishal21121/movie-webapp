@@ -33,7 +33,7 @@ function MoviePage() {
         <CiLogout className="text-3xl" />
         <button className="w-fit">Previous Page</button>
       </div>
-      <div className="w-full sm:w-3/4  mx-auto sm:h-[80vh] h-[40vh] flex justify-center  px-4 py-16 rounded-lg border">
+      <div className="w-full sm:w-3/4  mx-auto sm:h-[80vh] h-[40vh] flex justify-center box-border bg-red-500 ">
         <iframe
           className="w-full h-full"
           src={`https://vidsrc.xyz/embed/${state?.showType}/${movieId}`}

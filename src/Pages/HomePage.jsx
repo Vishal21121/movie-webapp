@@ -158,7 +158,7 @@ function HomePage() {
                 Previosly Watched
               </h2>
               <MdDelete
-                className="mt-1 text-3xl cursor-pointer hover:text-gray-500"
+                className="mt-1 text-3xl text-white cursor-pointer hover:text-gray-500"
                 onClick={() => {
                   setMovieList([]);
                   clearElements();
@@ -180,9 +180,7 @@ function HomePage() {
         </div>
       )}
       <div className="flex flex-col items-center gap-4">
-        <h2 className="text-3xl font-bold text-black sm:text-4xl dark:text-gray-300">
-          {currentResultType}
-        </h2>
+        <h2 className="text-3xl font-bold text-white">{currentResultType}</h2>
         <div
           className="flex flex-wrap justify-center w-full gap-4 p-4"
           id="movieContainer"
