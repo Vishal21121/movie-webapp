@@ -6,6 +6,7 @@ import { useDebouncedCallback } from "use-debounce";
 import MovieWatched from "../components/MovieWatched";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import axios from "axios";
+import { MdDelete } from "react-icons/md";
 
 function HomePage() {
   const [movieCard, setMovieCard] = useState(null);
@@ -14,7 +15,7 @@ function HomePage() {
   const [noDataFound, setNoDataFound] = useState(false);
   const [currentResultType, setCurrentResultType] = useState("Trending Movies");
   const [movieList, setMovieList] = useState(null);
-  const { getItem } = useLocalStorage();
+  const { getItem, clearElements } = useLocalStorage();
 
   function getMovie() {
     return axios({
@@ -117,16 +118,16 @@ function HomePage() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#131330] to-[#0a0a12]">
       <div className="flex flex-col items-center gap-10 p-12">
-        <h1 className="text-4xl text-white font-bold text-center">
+        <h1 className="text-4xl font-bold text-center text-white">
           What would you like to watch?
         </h1>
-        <div className="flex w-full justify-center gap-4">
-          <div className="flex items-center sm:w-1/2 w-3/4 gap-4 input input-bordered input-info ">
-            <FaSearch className="sm:text-xl text-base" />
+        <div className="flex justify-center w-full gap-4">
+          <div className="flex items-center w-3/4 gap-4 sm:w-1/2 input input-bordered input-info ">
+            <FaSearch className="text-base sm:text-xl" />
             <input
               type="text"
               placeholder="What you would like to watch?"
-              className="hidden sm:block w-full bg-transparent text-black placeholder:text dark:text-white"
+              className="hidden w-full text-black bg-transparent sm:block placeholder:text dark:text-white"
               value={movieName}
               autoFocus
               onChange={(e) => {
@@ -138,7 +139,7 @@ function HomePage() {
             <input
               type="text"
               placeholder="Search"
-              className="block sm:hidden w-full bg-transparent text-black placeholder:text dark:text-neutral-content"
+              className="block w-full text-black bg-transparent sm:hidden placeholder:text dark:text-neutral-content"
               value={movieName}
               autoFocus
               onChange={(e) => {
@@ -152,11 +153,20 @@ function HomePage() {
       {currentResultType === "Trending Movies" && (
         <div className="flex flex-col items-center w-full h-full">
           {movieList && movieList.length > 0 && (
-            <h2 className="sm:text-4xl text-3xl text-gray-300 font-bold">
-              Previosly Watched
-            </h2>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-3xl font-bold text-gray-300 sm:text-4xl">
+                Previosly Watched
+              </h2>
+              <MdDelete
+                className="mt-1 text-3xl cursor-pointer hover:text-gray-500"
+                onClick={() => {
+                  setMovieList([]);
+                  clearElements();
+                }}
+              />
+            </div>
           )}
-          <div className="w-full flex flex-wrap justify-center gap-4 p-4">
+          <div className="flex flex-wrap justify-center w-full gap-4 p-4">
             {movieList &&
               movieList.map((el) => (
                 <MovieWatched
@@ -170,11 +180,11 @@ function HomePage() {
         </div>
       )}
       <div className="flex flex-col items-center gap-4">
-        <h2 className="sm:text-4xl text-3xl text-black dark:text-gray-300 font-bold">
+        <h2 className="text-3xl font-bold text-black sm:text-4xl dark:text-gray-300">
           {currentResultType}
         </h2>
         <div
-          className="w-full flex justify-center flex-wrap p-4 gap-4"
+          className="flex flex-wrap justify-center w-full gap-4 p-4"
           id="movieContainer"
         >
           {isLoading && (
