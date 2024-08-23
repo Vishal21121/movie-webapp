@@ -157,13 +157,15 @@ function HomePage() {
               <h2 className="text-3xl font-bold text-gray-300 sm:text-4xl">
                 Previosly Watched
               </h2>
-              <MdDelete
-                className="mt-1 text-3xl text-white cursor-pointer hover:text-gray-500"
+              <button
+                className="mt-1 text-white cursor-pointer btn btn-primary"
                 onClick={() => {
                   setMovieList([]);
                   clearElements();
                 }}
-              />
+              >
+                Clear All
+              </button>
             </div>
           )}
           <div className="flex flex-wrap justify-center w-full gap-4 p-4">
@@ -174,6 +176,7 @@ function HomePage() {
                   src={el.src}
                   showType={el.showType}
                   movieId={el.movieId}
+                  setMovieList={setMovieList}
                 />
               ))}
           </div>

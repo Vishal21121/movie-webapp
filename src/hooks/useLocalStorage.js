@@ -2,7 +2,6 @@ const useLocalStorage = () => {
   const getItem = (itemName) => {
     let itemFound = localStorage.getItem(itemName);
     if (itemFound) {
-      console.log(itemFound);
       return itemFound;
     }
     localStorage.setItem(itemName, JSON.stringify([]));
@@ -33,8 +32,14 @@ const useLocalStorage = () => {
   const removeElement = (movieId) => {
     const movies = getItem("movieList");
     if (movies) {
-      let filteredMovies = movies.filter((el) => el.movieId !== movieId);
-      return filteredMovies;
+      let length = JSON.parse(movies).length;
+      if (length > 0) {
+        let filteredMovies = JSON.parse(movies).filter(
+          (el) => el.movieId !== movieId
+        );
+        localStorage.setItem("movieList", JSON.stringify(filteredMovies));
+        return filteredMovies;
+      }
     }
     return null;
   };
